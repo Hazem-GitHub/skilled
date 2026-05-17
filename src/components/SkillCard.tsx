@@ -13,21 +13,23 @@ const SkillCard = ({
 	createdAt,
 	description,
 	installCommand,
+	category,
 	tags,
 	title,
 	authorClerkId,
 	authorEmail,
+	upvotes,
+	commentCount,
 }: SkillRecord) => {
 	const [copied, setCopied] = useState(false);
-
-	const category = tags[0] ?? "General";
 
 	const handleCopy = async () => {
 		try {
 			await navigator.clipboard.writeText(installCommand);
 			setCopied(true);
 			setTimeout(() => setCopied(false), 2000);
-		} catch {
+		} catch (error) {
+			console.error("Failed to copy to clipboard:", error);
 			setCopied(false);
 		}
 	};
@@ -72,6 +74,13 @@ const SkillCard = ({
 
 					<p className="category">{category}</p>
 				</div>
+				<div className="tags">
+					{tags?.map((tag) => (
+						<span key={tag} className="tag" title={tag}>
+							{tag}
+						</span>
+					))}
+				</div>
 
 				<div className="summary">
 					<Link to="/skills" className="title-link">
@@ -100,12 +109,12 @@ const SkillCard = ({
 					<div className="stats">
 						<button type="button" className="upvote" disabled>
 							<ArrowBigUp size={16} fill="currentColor" />
-							<span>{tags.length}</span>
+							<span>{upvotes ?? 0}</span>
 						</button>
 
 						<div className="comments">
 							<MessageSquare size={14} />
-							<span>{authorEmail ? 1 : 0}</span>
+							<span>{commentCount ?? 0}</span>
 						</div>
 					</div>
 

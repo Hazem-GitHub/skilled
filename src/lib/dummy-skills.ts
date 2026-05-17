@@ -11,6 +11,8 @@ export const dummySkills: SkillRecord[] = [
 		createdAt: "2026-04-14T09:30:00.000Z",
 		authorClerkId: "user_2a1b3c4d",
 		authorEmail: "dev1@example.com",
+		upvotes: 10,
+		commentCount: 5,
 	},
 	{
 		id: "skill-002",
@@ -24,6 +26,8 @@ export const dummySkills: SkillRecord[] = [
 		createdAt: "2026-04-14T09:45:00.000Z",
 		authorClerkId: "user_5e6f7g8h",
 		authorEmail: "dev2@example.com",
+		upvotes: 20,
+		commentCount: 10,
 	},
 	{
 		id: "skill-003",
@@ -37,6 +41,8 @@ export const dummySkills: SkillRecord[] = [
 		createdAt: "2026-04-14T10:00:00.000Z",
 		authorClerkId: "user_9i0j1k2l",
 		authorEmail: "dev3@example.com",
+		upvotes: 30,
+		commentCount: 15,
 	},
 	{
 		id: "skill-004",
@@ -50,6 +56,8 @@ export const dummySkills: SkillRecord[] = [
 		createdAt: "2026-04-14T10:15:00.000Z",
 		authorClerkId: "user_3m4n5o6p",
 		authorEmail: "dev4@example.com",
+		upvotes: 40,
+		commentCount: 20,
 	},
 	{
 		id: "skill-005",
@@ -63,5 +71,7 @@ export const dummySkills: SkillRecord[] = [
 		createdAt: "2026-04-14T10:30:00.000Z",
 		authorClerkId: "user_7q8r9s0t",
 		authorEmail: "dev5@example.com",
+		upvotes: 50,
+		commentCount: 25,
 	},
 ];

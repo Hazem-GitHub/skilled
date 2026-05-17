@@ -11,18 +11,18 @@ function Home() {
 			<section className="hero">
 				<div className="copy">
 					<h1>
-						The Registery for <br />
+						The Registry for <br />
 						<span className="text-gradient">Agentic Intelligence</span>
 					</h1>
 					<p>
-						A high-performance registery for procedural agent skills. Discover,
+						A high-performance registry for procedural agent skills. Discover,
 						publish and operate reusable agentic capabilities from a
 						route-driven workspace.
 					</p>
 					<div className="actions">
 						<Link to="/skills" className="btn-primary">
 							<Terminal size={18} />
-							<span>Browse Registery</span>
+							<span>Browse Registry</span>
 						</Link>
 						<Link to="/skills/new" className="btn-secondary">
 							Publish Skill
