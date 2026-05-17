@@ -512,8 +512,12 @@
       }
     }
 
-    .category {
+    .category, .tag {
       @apply rounded-md bg-elevated px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-text-muted;
+    }
+
+    .tags {
+      @apply flex flex-wrap gap-2;
     }
 
     .summary {
