@@ -26,7 +26,7 @@ function Home() {
 						<Link
 							to="/skills"
 							className="btn-primary"
-							onClick={() => posthog.capture("browse_registry_clicked")}
+							onClick={() => posthog?.capture("browse_registry_clicked")}
 						>
 							<Terminal size={18} />
 							<span>Browse Registry</span>
@@ -34,7 +34,7 @@ function Home() {
 						<Link
 							to="/skills/new"
 							className="btn-secondary"
-							onClick={() => posthog.capture("publish_skill_clicked")}
+							onClick={() => posthog?.capture("publish_skill_clicked")}
 						>
 							Publish Skill
 						</Link>

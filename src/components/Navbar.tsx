@@ -24,7 +24,7 @@ const Navbar = () => {
 					<Link
 						to="/sign-in/$"
 						className="btn-primary"
-						onClick={() => posthog.capture("sign_in_link_clicked")}
+						onClick={() => posthog?.capture("sign_in_link_clicked")}
 					>
 						<LogIn size={16} />
 						Sign in
@@ -32,7 +32,7 @@ const Navbar = () => {
 					<Link
 						to="/sign-up/$"
 						className="btn-secondary"
-						onClick={() => posthog.capture("sign_up_link_clicked")}
+						onClick={() => posthog?.capture("sign_up_link_clicked")}
 					>
 						<UserPlus size={16} />
 						Sign up

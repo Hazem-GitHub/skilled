@@ -30,14 +30,14 @@ const SkillCard = ({
 			await navigator.clipboard.writeText(installCommand);
 			setCopied(true);
 			setTimeout(() => setCopied(false), 2000);
-			posthog.capture("skill_install_command_copied", {
+			posthog?.capture("skill_install_command_copied", {
 				skill_title: title,
 				skill_category: category,
 				install_command: installCommand,
 			});
 		} catch (error) {
 			console.error("Failed to copy to clipboard:", error);
-			posthog.captureException(error);
+			posthog?.captureException(error);
 			setCopied(false);
 		}
 	};
@@ -132,7 +132,7 @@ const SkillCard = ({
 							className="open"
 							title={`Open ${title}`}
 							onClick={() =>
-								posthog.capture("skill_card_opened", {
+								posthog?.capture("skill_card_opened", {
 									skill_title: title,
 									skill_category: category,
 								})

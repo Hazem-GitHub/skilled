@@ -47,6 +47,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 	shellComponent: RootDocument,
 });
 
+const posthogToken = import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN;
+
+if (!posthogToken && import.meta.env.DEV) {
+	console.warn(
+		"PostHog project token not configured. Set VITE_PUBLIC_POSTHOG_PROJECT_TOKEN environment variable.",
+	);
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
@@ -55,7 +63,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			</head>
 			<body className="font-sans antialiased wrap-anywhere dark">
 				<PostHogProvider
-					apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN ?? ""}
+					apiKey={posthogToken ?? ""}
 					options={{
 						api_host: "/ingest",
 						ui_host:
