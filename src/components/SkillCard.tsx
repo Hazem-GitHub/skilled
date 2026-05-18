@@ -1,3 +1,4 @@
+import { usePostHog } from "@posthog/react";
 import { Link } from "@tanstack/react-router";
 import {
 	ArrowBigUp,
@@ -22,14 +23,21 @@ const SkillCard = ({
 	commentCount,
 }: SkillRecord) => {
 	const [copied, setCopied] = useState(false);
+	const posthog = usePostHog();
 
 	const handleCopy = async () => {
 		try {
 			await navigator.clipboard.writeText(installCommand);
 			setCopied(true);
 			setTimeout(() => setCopied(false), 2000);
+			posthog?.capture("skill_install_command_copied", {
+				skill_title: title,
+				skill_category: category,
+				install_command: installCommand,
+			});
 		} catch (error) {
 			console.error("Failed to copy to clipboard:", error);
+			posthog?.captureException(error);
 			setCopied(false);
 		}
 	};
@@ -119,7 +127,17 @@ const SkillCard = ({
 					</div>
 
 					<div className="actions">
-						<Link to="/skills" className="open" title={`Open ${title}`}>
+						<Link
+							to="/skills"
+							className="open"
+							title={`Open ${title}`}
+							onClick={() =>
+								posthog?.capture("skill_card_opened", {
+									skill_title: title,
+									skill_category: category,
+								})
+							}
+						>
 							<span>Open</span>
 							<ArrowUpRight size={14} />
 						</Link>

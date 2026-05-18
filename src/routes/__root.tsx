@@ -1,5 +1,6 @@
 // import ClerkProvider from "../integrations/clerk/provider";
 import { ClerkProvider } from "@clerk/tanstack-react-start";
+import { PostHogProvider } from "@posthog/react";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import {
@@ -46,6 +47,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 	shellComponent: RootDocument,
 });
 
+const posthogToken = import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN;
+
+if (!posthogToken && import.meta.env.DEV) {
+	console.warn(
+		"PostHog project token not configured. Set VITE_PUBLIC_POSTHOG_PROJECT_TOKEN environment variable.",
+	);
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
@@ -53,32 +62,45 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body className="font-sans antialiased wrap-anywhere dark">
-				<ClerkProvider>
-					<div id="root-layout">
-						<header>
-							<div className="frame">
-								<Navbar />
-								<Crosshair />
-								<Crosshair />
-							</div>
-						</header>
-						<main>
-							<div className="frame">{children}</div>
-						</main>
-					</div>
-					<TanStackDevtools
-						config={{
-							position: "bottom-right",
-						}}
-						plugins={[
-							{
-								name: "Tanstack Router",
-								render: <TanStackRouterDevtoolsPanel />,
-							},
-							TanStackQueryDevtools,
-						]}
-					/>
-				</ClerkProvider>
+				<PostHogProvider
+					apiKey={posthogToken ?? ""}
+					options={{
+						api_host: "/ingest",
+						ui_host:
+							import.meta.env.VITE_PUBLIC_POSTHOG_HOST ||
+							"https://us.posthog.com",
+						defaults: "2025-05-24",
+						capture_exceptions: true,
+						debug: import.meta.env.DEV,
+					}}
+				>
+					<ClerkProvider>
+						<div id="root-layout">
+							<header>
+								<div className="frame">
+									<Navbar />
+									<Crosshair />
+									<Crosshair />
+								</div>
+							</header>
+							<main>
+								<div className="frame">{children}</div>
+							</main>
+						</div>
+						<TanStackDevtools
+							config={{
+								position: "bottom-right",
+							}}
+							plugins={[
+								{
+									name: "Tanstack Router",
+									render: <TanStackRouterDevtoolsPanel />,
+								},
+								TanStackQueryDevtools,
+							]}
+						/>
+					</ClerkProvider>
+				</PostHogProvider>
 				<Scripts />
 			</body>
 		</html>
