@@ -1,259 +1,175 @@
-Welcome to your new TanStack Start app! 
+# Skilled
 
-# Getting Started
+Skilled is a TanStack Start application for discovering, publishing, and operating reusable agentic skills. It is built as a registry for procedural agent capabilities, with authentication, analytics, and a Firebase Data Connect backed skill catalog.
 
-To run this application:
+The app currently focuses on the public registry experience: loading recently created skills from Data Connect, rendering them as installable skill cards, and capturing key product events through PostHog.
+
+## Features
+
+- Public landing page for the Skilled registry
+- Recently created skills loaded through a TanStack Start server function
+- Skill cards with author metadata, tags, usage details, stats, and copyable install commands
+- Clerk-powered sign-in and sign-up routes
+- Firebase Data Connect schema for users and skills
+- Generated Data Connect SDK under `src/dataconnect-generated`
+- PostHog analytics for auth, hero CTA, card open, install command copy, and clipboard error events
+- TanStack Router, TanStack Query, and TanStack Devtools integration
+- Tailwind CSS styling with Biome for linting and formatting
+
+## Tech Stack
+
+- [TanStack Start](https://tanstack.com/start) for the full-stack React app
+- [TanStack Router](https://tanstack.com/router) for file-based routing
+- [TanStack Query](https://tanstack.com/query) for data coordination
+- [React 19](https://react.dev/) with the React Compiler
+- [Firebase Data Connect](https://firebase.google.com/docs/data-connect) for the registry database layer
+- [Clerk](https://clerk.com/) for authentication
+- [PostHog](https://posthog.com/) for product analytics
+- [Tailwind CSS](https://tailwindcss.com/) for styling
+- [Biome](https://biomejs.dev/) for linting and formatting
+- [Vitest](https://vitest.dev/) for tests
+
+## Project Structure
+
+```text
+.
+├── dataconnect/                  # Firebase Data Connect schema and connector operations
+│   ├── schema/schema.gql          # User and Skill tables
+│   └── connectors/queries.gql     # Public skill query
+├── public/                        # Web manifest, icons, and static files
+├── src/
+│   ├── components/                # Navbar, SkillCard, visual components
+│   ├── dataconnect-generated/     # Generated Firebase Data Connect SDK
+│   ├── integrations/              # TanStack Query and devtools integrations
+│   ├── lib/                       # Firebase client and local utilities
+│   ├── routes/                    # TanStack Router file routes
+│   ├── start.ts                   # TanStack Start entry
+│   └── styles.css                 # Global app styles
+├── vite.config.ts                 # Vite, TanStack Start, Tailwind, PostHog proxy
+└── package.json
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 22 or newer
+- npm
+- A Clerk application
+- A Firebase project with Data Connect configured
+- Optional: a PostHog project for analytics
+
+### Install Dependencies
 
 ```bash
 npm install
+```
+
+### Configure Environment Variables
+
+Create a local environment file:
+
+```bash
+cp .env.example .env.local
+```
+
+Then set the values required by the app:
+
+```bash
+# Clerk
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+
+# Firebase
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_AUTH_DOMAIN=...
+VITE_FIREBASE_PROJECT_ID=...
+VITE_FIREBASE_APP_ID=...
+
+# PostHog, optional but recommended
+VITE_PUBLIC_POSTHOG_PROJECT_TOKEN=phc_...
+VITE_PUBLIC_POSTHOG_HOST=https://us.posthog.com
+```
+
+`VITE_CLERK_PUBLISHABLE_KEY` is listed in `.env.example`. The Firebase variables are read by `src/lib/firebase.ts`, and the PostHog variables are read by `src/routes/__root.tsx` and `src/utils/posthog-server.ts`.
+
+### Run Locally
+
+```bash
 npm run dev
 ```
 
-# Building For Production
+The dev server runs on [http://localhost:3000](http://localhost:3000).
 
-To build this application for production:
+### Build for Production
 
 ```bash
 npm run build
+npm run preview
 ```
 
-## Testing
+## Data Model
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+Skilled uses Firebase Data Connect with two core tables:
+
+- `User`: keyed by `clerkId`, with email, username, and avatar metadata
+- `Skill`: a reusable agentic skill with title, description, category, tags, install command, prompt configuration, usage example, counters, author, and creation timestamp
+
+The public `GetSkills` query searches across title, description, category, and tags, then returns skills ordered by creation date. The home route calls this query from a TanStack Start server function and renders the result as skill cards.
+
+## Authentication
+
+Authentication is handled by Clerk through `@clerk/tanstack-react-start`.
+
+Current routes:
+
+- `/sign-in/*`
+- `/sign-up/*`
+
+The root layout wraps the app in `ClerkProvider`, and the navbar switches between auth links and the Clerk user menu based on signed-in state.
+
+## Analytics
+
+PostHog is wired through `PostHogProvider` in the root route. In development, analytics requests are proxied through Vite using `/ingest` routes to avoid CORS issues.
+
+Instrumented events include:
+
+- `browse_registry_clicked`
+- `publish_skill_clicked`
+- `skill_install_command_copied`
+- `skill_card_opened`
+- `sign_in_link_clicked`
+- `sign_up_link_clicked`
+
+Server-side PostHog support is prepared in `src/utils/posthog-server.ts` for future server event capture.
+
+## Available Scripts
 
 ```bash
-npm run test
+npm run dev       # Start the local development server on port 3000
+npm run build     # Build the production app
+npm run preview   # Preview the production build locally
+npm run test      # Run Vitest once
+npm run lint      # Run Biome linting
+npm run format    # Format files with Biome
+npm run check     # Run Biome checks
 ```
 
-## Styling
+## Development Notes
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+- Routes are file-based and live in `src/routes`.
+- The generated route tree is stored in `src/routeTree.gen.ts`.
+- Data Connect generated code lives in `src/dataconnect-generated`; regenerate it when schema or connector operations change.
+- The current home page links to future registry actions such as browsing and publishing skills. Add the corresponding routes under `src/routes` as those workflows are implemented.
+- `posthog-setup-report.md` documents the analytics integration that has already been applied.
 
-### Removing Tailwind CSS
+## Contributing
 
-If you prefer not to use Tailwind CSS:
+1. Create a feature branch.
+2. Install dependencies with `npm install`.
+3. Add or update routes, components, schema, or generated data code as needed.
+4. Run `npm run check` and `npm run test` before opening a pull request.
+5. Keep environment-specific secrets in local `.env*` files only.
 
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `npm install @tailwindcss/vite tailwindcss -D`
+## License
 
-## Linting & Formatting
-
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
-
-
-```bash
-npm run lint
-npm run format
-npm run check
-```
-
-
-## Setting up Clerk
-
-1. Sign up at [clerk.com](https://clerk.com) and create an application
-2. Copy the **Publishable Key** from the Clerk dashboard
-3. Set it in your `.env.local`:
-   ```bash
-   VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
-   ```
-4. Visit the demo route at `/demo/clerk` once `npm run dev` is running
-
-### What's wired up
-
-- **`<ClerkProvider>`** at the app root (`src/integrations/clerk/provider.tsx`) handles auth context for the whole tree
-- **`<SignInButton>` / `<UserButton>`** in the header swap based on auth state
-- **`/demo/clerk`** shows Clerk's prebuilt sign-in UI and a signed-in greeting
-
-### Protecting a route
-
-Wrap any component in `<SignedIn>` / `<SignedOut>`:
-
-```tsx
-import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react'
-
-function ProtectedPage() {
-  return (
-    <>
-      <SignedIn>
-        <YourPageContent />
-      </SignedIn>
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
-    </>
-  )
-}
-```
-
-For server-side checks (route loaders, server functions), see the Clerk docs on [`auth()`](https://clerk.com/docs/references/backend/auth).
-
-### Production checklist
-
-- Replace the test keys with **production keys** from a dedicated production Clerk instance
-- Configure your production domain under **Domains** in the Clerk dashboard
-- Set up social providers (Google, GitHub, etc.) under **User & Authentication → Social Connections**
-
-
-## Shadcn
-
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
-
-```bash
-pnpm dlx shadcn@latest add button
-```
-
-
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+No license has been specified yet. Add one before distributing or accepting external contributions.
