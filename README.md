@@ -6,7 +6,7 @@ The app currently focuses on the public registry experience: loading recently cr
 
 ## Screenshot
 
-![Skilled app screenshot](/image.png)
+![Skilled app screenshot](/public/image.png)
 
 ## Features
 
