@@ -17,10 +17,11 @@ const SkillCard = ({
 	category,
 	tags,
 	title,
-	authorClerkId,
-	authorEmail,
+	author,
 	upvotes,
 	commentCount,
+	usageExample,
+	promptConfig,
 }: SkillRecord) => {
 	const [copied, setCopied] = useState(false);
 	const posthog = usePostHog();
@@ -66,12 +67,12 @@ const SkillCard = ({
 				<div className="meta">
 					<div className="author">
 						<img
-							src={"/logo512.png"}
-							alt={`${authorEmail} avatar`}
+							src={author.imageUrl || "/logo512.png"}
+							alt={`${author.username} avatar`}
 							className="avatar"
 						/>
 						<div className="author-copy">
-							<p>{authorEmail}</p>
+							<p>{author.username || author.email}</p>
 							<p>
 								{createdAt
 									? new Date(createdAt).toLocaleDateString()
@@ -96,6 +97,8 @@ const SkillCard = ({
 					</Link>
 
 					<p>{description}</p>
+					<p>{usageExample}</p>
+					<p>{promptConfig}</p>
 				</div>
 
 				<div className="command">
