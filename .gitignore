@@ -11,3 +11,8 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
+
+# firebase data connect
+skilled-f9f48-firebase-adminsdk-fbsvc-96674d1cfb.json
+.firebase
+dataconnect/.dataconnect

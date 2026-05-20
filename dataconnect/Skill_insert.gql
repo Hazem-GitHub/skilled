@@ -1,0 +1,20 @@
+# This is a file for you to write an un-named mutation. 
+# Only one un-named mutation is allowed per file.
+mutation {
+  skill_insert(
+    data: {
+      id: "", 
+      authorClerkId: "user_3DrCnkAp9PFBekURJNnU4WjR3Xb", 
+      category: "", 
+      commentCount: 0, 
+      createdAt: "", 
+      description: "", 
+      installCommand: "", 
+      promptConfig: "", 
+      tags: [""], 
+      title: "", 
+      upvotes: 0, 
+      usageExample: ""
+      }
+  )
+}
