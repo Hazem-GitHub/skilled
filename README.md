@@ -4,6 +4,10 @@ Skilled is a TanStack Start application for discovering, publishing, and operati
 
 The app currently focuses on the public registry experience: loading recently created skills from Data Connect, rendering them as installable skill cards, and capturing key product events through PostHog.
 
+## Screenshot
+
+![Skilled app screenshot](/image.png)
+
 ## Features
 
 - Public landing page for the Skilled registry
@@ -169,7 +173,3 @@ npm run check     # Run Biome checks
 3. Add or update routes, components, schema, or generated data code as needed.
 4. Run `npm run check` and `npm run test` before opening a pull request.
 5. Keep environment-specific secrets in local `.env*` files only.
-
-## License
-
-No license has been specified yet. Add one before distributing or accepting external contributions.
